@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Moja pierwsza Aplikacja Vue</title>
+    <script src="http://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+    <!-- bardzo ważne żeby mieć znacznik div o id = "app" to jest punkt zaczepienia aplikacji w Vue 
+    dla template'u-->
+    <div id="app">
+       <p>{{message}}</p>
+       <input v-model="message"/>
+    </div>
+    <script>
+        const App = {
+            data() {
+                return {
+                    message: 'Piotr'
+                };
+            }
+        };
+
+        Vue.createApp(App).mount("#app");
+    </script>
+</body>
+
+</html>

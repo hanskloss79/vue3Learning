@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <title>Moja pierwsza Aplikacja Vue</title>
+    <script src="http://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+    <!-- bardzo ważne żeby mieć znacznik div o id = "app" to jest punkt zaczepienia aplikacji w Vue 
+    dla template'u-->
+    <div id="app">
+        <button v-on:click="count++">Kliknij</button>
+        count: {{ count }} {{name}}
+        <p>A ten przycisk dodaje litery do string</p>
+        <button @click="increment">Kliknij</button>
+        licznik: {{count}}
+    </div>
+    <script>
+        const Counter = {
+            data() {
+                return {
+                    count: 10,
+                    name: 'Piotr'
+                };
+            },
+            methods: {
+                increment() {
+                    this.name += 'p';
+                }
+            } 
+        };
+
+        Vue.createApp(Counter).mount("#app");
+    </script>
+</body>
+
+</html>

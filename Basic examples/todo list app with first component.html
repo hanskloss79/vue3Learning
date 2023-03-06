@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <title>Lista rzeczy do zrobienia</title>
+    <script src="http://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+    <!-- bardzo ważne żeby mieć znacznik div o id = "app" to jest punkt zaczepienia aplikacji w Vue 
+    dla template'u-->
+    <div id="app">
+        <div>
+            <ul>
+                <todo-item v-for="todo in todos" :todo="todo"></todo-item>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const App = {
+            data() {
+                return {
+                    todos: [
+                        { id: 1, description: "zjeść" },
+                        { id: 2, description: "napić się" },
+                        { id: 3, description: "poczytać"},
+                        { id: 4, description: "iść spać" }
+                    ]
+                };
+            }
+        };
+
+        const app = Vue.createApp(App);
+
+        app.component("todo-item", {
+            props: ["todo"],
+            template: '<li>{{todo.description}} to nr {{todo.id}}</li>'
+        });
+        
+        app.mount("#app");
+    </script>
+</body>
+
+</html>

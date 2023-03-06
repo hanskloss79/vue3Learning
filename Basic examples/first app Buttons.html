@@ -16,13 +16,21 @@
         <p>A ten przycisk dodaje litery do string</p>
         <button @click="increment">Kliknij</button>
         licznik: {{count}}
+        {{ count+1 }}
+        <br>
+        {{ name.split('').reverse().join('') }}
+        <br>
+        {{ areYouSure ? 'YES' : 'NO' }}
+        <br>
+        <input v-model="areYouSure"/>
     </div>
     <script>
         const Counter = {
             data() {
                 return {
                     count: 10,
-                    name: 'Piotr'
+                    name: 'Piotr',
+                    areYouSure: 'ja'
                 };
             },
             methods: {
@@ -31,7 +39,7 @@
                 }
             } 
         };
-
+        //instance of Counter app created and mounted on html page
         Vue.createApp(Counter).mount("#app");
     </script>
 </body>

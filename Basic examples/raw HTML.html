@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <title>rawHtml</title>
+    <script src="http://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+    <!-- bardzo ważne żeby mieć znacznik div o id = "app" to jest punkt zaczepienia aplikacji w Vue 
+    dla template'u-->
+    <div id="app">
+        <span v-html="rawHtml"></span>
+    </div>
+    <script>
+        const App = {
+            data() {
+                return {
+                    rawHtml: '<b>pogrubienie</b>'
+                }
+            },
+        };
+
+        const aplication = Vue.createApp(App);
+        aplication.mount("#app");
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Instrukcje warunkowe w Vue3</title>
+    <script src="http://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+    <div id="app">
+        <span v-if="show">Ten napis jest widoczny</span>
+        <p v-if="notshow">Pojawiam się i znikam</p>
+        <button v-on:click="showText">Kliknij</button>
+    </div>
+    <script>
+        //body of Vue application
+        const App = {
+            data() {
+                return {
+                    show: true,
+                    notshow: false
+                }
+            },
+            methods: {
+                showText() {
+                    this.notshow = !this.notshow;
+                }
+            },
+        }
+
+        Vue.createApp(App).mount("#app");
+
+    </script>
+</body>
+
+</html>

@@ -1,3 +1,6 @@
+const emitter = mitt();
+
+
 // znaczniki w templacie na stronę HTML
 const inputComponent = {
     template: `<input :placeholder="placeholder" v-model="input" 
@@ -11,12 +14,26 @@ const inputComponent = {
     },
     methods: {
         monitorEnterKey() {
-            this.$emit("add-note", {
+            emitter.emit('add-note', {
                 note: this.input,
                 timestamp: new Date().toLocaleString(),
             });
             this.input = "";
         },
+    },
+};
+
+// komponent licznik notatek
+const noteCountComponent = {
+    template: `<div class="note-count">Liczba notatek: <strong>{{ noteCount }}</strong></div>`,
+    data() {
+        return {
+            noteCount: 0,
+        };
+    },
+    // dodajemy nasłuch dla zdarzenia związanego z dodaniem notatki i zwiększamy licznik notatek o 1
+    created() {
+        emitter.on('add-note', event => this.noteCount++);
     },
 };
 
@@ -30,9 +47,13 @@ const notepad = {
     },
     // komponent Vue - przypisanie do znacznika HTML
     components: {
-        'input-component': inputComponent
+        'input-component': inputComponent,
+        'note-count-component': noteCountComponent,
     },
 
+    created() {
+        emitter.on("add-note", (event) => this.addNote(event));
+    },
     methods: {
         // dodanie notatki do listy
         addNote(event){

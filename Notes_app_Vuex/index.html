@@ -20,13 +20,20 @@
       <div class="columns">
         <div class="column has-text-centered">
           <strong>Notatki</strong>
+          <div v-for="note in notes" class="notes">
+            {{ note }}
+          </div>
         </div>
         <div class="column has-text-centered">
           <strong>Moment wprowadzenia notatki</strong>
+          <div v-for="timestamp in timestamps" class="timestamps">
+            {{ timestamp }}
+          </div>
         </div>
       </div>
       <input-component></input-component>
     </div>
+    <note-count-component></note-count-component>
   </div>
 
   <script src="./main.js"></script>

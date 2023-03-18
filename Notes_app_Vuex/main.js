@@ -52,13 +52,48 @@ const store = Vuex.createStore({
 });
 
 const inputComponent = {
-  template: `<input placeholder='Wprowadź notatkę' class="input is-small" type="text" />`,
+  template: `<input placeholder='Wprowadź notatkę' v-model="input"
+    @keyup.enter="monitorEnterKey" class="input is-small" type="text" />`,
+  data() {
+    return {
+      input: '',
+    };
+  },
+  methods: {
+    monitorEnterKey() {
+      this.$store.dispatch('addNote', this.input);
+      this.$store.dispatch('addTimeStamp', new Date().toLocaleString());
+      this.input = ''; // ustawiamy input jako pusty
+    }
+  }
 }
 
+// komponent licznik notatek
+const noteCountComponent = {
+  template: `<div class="note-count">Liczba notatek: <strong>{{ noteCount }}</strong></div>`,
+  computed: {
+    noteCount() {
+      return this.$store.getters.getNoteCount;
+    }
+  },
+
+};
+
+
 const notepad = Vue.createApp({
+  computed: {
+    notes() {
+      return this.$store.getters.getNotes;
+    },
+    timestamps() {
+      return this.$store.getters.getTimeStamps;
+    },
+  },
+
   components: {
-    'input-component': inputComponent
-  }
+    'input-component': inputComponent,
+    'note-count-component': noteCountComponent,
+  },
 });
 
 notepad.use(store);

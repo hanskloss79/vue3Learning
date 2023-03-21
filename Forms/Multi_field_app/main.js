@@ -37,4 +37,4 @@ Vue.createApp({
   components: {
     'input-form': InputForm
   }
-}).mount('#Multi_app');
+}).mount('#Input_app')

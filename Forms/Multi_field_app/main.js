@@ -7,7 +7,27 @@ const InputForm = {
     <div class="input-form">
       <form @submit="submitForm" class="ui form">
         <div class="field">
-          <input v-model="newItem" type="text" placeholder="Dodaj element garderoby" />
+          <label>Nowy element</label>
+          <input v-model="fields.newItem" type="text" placeholder="Dodaj element garderoby" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input v-model="fields.email" type="text" placeholder="Proszę podać swój email" />
+        </div>
+        <div class="field">
+          <label>Priorytet</label>
+            <select v-model="fields.urgency" class="ui fluid search dropdown">
+              <option disabled value="">Proszę wybrać jedną opcję</option>
+              <option>Nieistotne</option>
+              <option>Umiarkowanie pilne</option>
+              <option>Pilne</option>
+            </select>
+        </div>
+        <div class="field">
+          <div class="ui checkbox">
+            <input v-model="fields.termsAndCoditions" type="checkbox">
+            <label>Akceptuję zasady i warunki</label>
+          </div>
         </div>
         <button class="ui button">Wyślij</button>
       </form>
@@ -20,21 +40,29 @@ const InputForm = {
     </div>`,
   data() {
     return {
-      newItem: '',
+      fields: {
+        newItem: '',
+        email: '',
+        urgency: '',
+        termsAndCoditions: false,
+      },
       items: []
-    }
+    };
   },
   methods: {
     submitForm(evt) {
-      this.items.push(this.newItem);
+      this.items.push(this.fields.newItem);
       newItem = '';
       evt.preventDefault();
     }
   }
 }
 
+/* v-model always picks the correct way to update the element, based on the input type it’s
+bound to. */
+
 Vue.createApp({
   components: {
     'input-form': InputForm
   }
-}).mount('#Input_app')
+}).mount('#Multi_app')

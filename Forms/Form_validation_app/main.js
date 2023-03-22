@@ -9,10 +9,12 @@ const InputForm = {
         <div class="field">
           <label>Nowy element</label>
           <input v-model="fields.newItem" type="text" placeholder="Dodaj element garderoby" />
+          <span style="color: red">{{ fieldErrors.newItem }}</span>
         </div>
         <div class="field">
           <label>Email</label>
           <input v-model="fields.email" type="text" placeholder="Proszę podać swój email" />
+          <span style="color: red">{{ fieldErrors.email }}</span>
         </div>
         <div class="field">
           <label>Priorytet</label>
@@ -22,12 +24,14 @@ const InputForm = {
               <option>Umiarkowanie pilne</option>
               <option>Pilne</option>
             </select>
+            <span style="color: red">{{ fieldErrors.urgency }}</span>
         </div>
         <div class="field">
           <div class="ui checkbox">
-            <input v-model="fields.termsAndCoditions" type="checkbox">
+            <input v-model="fields.termsAndConditions" type="checkbox">
             <label>Akceptuję zasady i warunki</label>
-          </div>
+            <span style="color: red">{{ fieldErrors.termsAndConditions }}</span>
+          </div> 
         </div>
         <button class="ui button">Wyślij</button>
       </form>
@@ -44,16 +48,48 @@ const InputForm = {
         newItem: '',
         email: '',
         urgency: '',
-        termsAndCoditions: false,
+        termsAndConditions: false,
+      },
+      fieldErrors: {
+        newItem: undefined,
+        email: undefined,
+        urgency: undefined,
+        termsAndConditions: undefined
       },
       items: []
     };
   },
   methods: {
     submitForm(evt) {
-      this.items.push(this.fields.newItem);
-      newItem = '';
       evt.preventDefault();
+
+      this.fieldErrors = this.validateForm(this.fields);
+      if (Object.keys(this.fieldErrors).length) return;
+      this.items.push(this.fields.newItem);
+      this.fields.newItem = '';
+      this.fields.email = '';
+      this.fields.urgency = '';
+      this.fields.termsAndConditions = false;
+    },
+    validateForm(fields) {
+      const errors = {};
+      if (!fields.newItem) errors.newItem = "Nowy element garderoby wymagany";
+      if (!fields.email) errors.email = "Email wymagany";
+      if (!fields.urgency) errors.urgency = "Priorytet wymagany";
+      if (!fields.termsAndConditions) {
+        errors.termsAndConditions = "Zasady i warunki muszą zostać zaakceptowane";
+      }
+
+
+      if (fields.email && !this.isEmail(fields.email)) {
+        errors.email = "Niepoprawny email";
+      }
+      return errors;
+    },
+    isEmail(email) {
+      //regular expression
+      const re = /\S+@\S+\.\S+/;
+      return re.test(email);
     }
   }
 }

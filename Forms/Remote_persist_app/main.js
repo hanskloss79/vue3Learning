@@ -40,16 +40,23 @@ const InputForm = {
             <span style="color: red">{{ fieldErrors.termsAndConditions }}</span>
           </div> 
         </div>
-        <button :disabled="isNewItemInputLimitExceeded || isNotUrgent"
-        class="ui button">Wyślij</button>
+        <button v-if="saveStatus === 'SAVING'" disabled class="ui button">Zapisywanie</button>
+        <button v-if="saveStatus === 'SUCCESS'" :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+          class="ui button">Zapisano! Wyślij następne</button>
+        <button v-if="saveStatus === 'ERROR'" :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+          class="ui button">Zapis nieudany - ponowić?</button>
+        <button v-if="saveStatus === 'READY'" :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+          class="ui button">Wyślij</button>
       </form>
       <div class="ui segment">
         <h4 class="ui header">Odzież</h4>
         <ul>
+          <div v-if="loading" class="ui active inline loader"></div>
           <li v-for="item in items" class="item">{{ item }}</li>
         </ul>
       </div>
     </div>`,
+
   data() {
     return {
       fields: {
@@ -64,8 +71,18 @@ const InputForm = {
         urgency: undefined,
         termsAndConditions: undefined
       },
-      items: []
+      items: [],
+      loading: false,
+      saveStatus: 'READY',
     };
+  },
+
+  created() {
+    this.loading = true;
+    apiClient.loadItems().then((items) => {
+      this.items = items;
+      this.loading = false;
+    });
   },
 
   computed: {
@@ -80,15 +97,37 @@ const InputForm = {
 
   methods: {
     submitForm(evt) {
+      // We prevent the browser’s default action of submitting the form with preventDefault().      
       evt.preventDefault();
 
       this.fieldErrors = this.validateForm(this.fields);
+      /* If the form has field errors upon submission, 
+      we return early to prevent apiClient from being called. */
       if (Object.keys(this.fieldErrors).length) return;
-      this.items.push(this.fields.newItem);
-      this.fields.newItem = '';
-      this.fields.email = '';
-      this.fields.urgency = '';
-      this.fields.termsAndConditions = false;
+
+      /* If no field errors exist, we create a new array called items which contains the existing
+      component items array and the new field.newItem value. */
+      const items = [...this.items, this.fields.newItem];
+
+      // We then use apiClient to begin persisting the new items array with apiClient.saveItems().
+      this.saveStatus  = 'SAVING';
+      /* If apiClient is successful, we update the component data with our new items array, empty
+      fields, and saveStatus: 'SUCCESS'. If apiClient is not successful, we leave everything as is
+      but set saveStatus to ‘ERROR’. */
+
+      apiClient.saveItems(items)
+        .then(() => {
+          this.items = items;
+          this.fields.newItem = '';
+          this.fields.email = '';
+          this.fields.urgency = '';
+          this.fields.termsAndConditions = false;
+          this.saveStatus = 'SUCCESS';
+        })
+        .catch((err) => {
+          console.log(err);
+          this.saveStatus = 'ERROR';
+        });
     },
     validateForm(fields) {
       const errors = {};
@@ -116,8 +155,44 @@ const InputForm = {
 /* v-model always picks the correct way to update the element, based on the input type it’s
 bound to. */
 
+/* apiClient is a simple object that holds the responsibility in simulating asynchronous loading and
+saving. In the code example above, we can see that the “load” and “save” methods are thin async
+wrappers around localStorage that we’ll use to retrieve and persist data. */
+let apiClient = {
+  loadItems: function () {
+    return {
+      then: function (cb) {
+        setTimeout(() => {
+          cb(JSON.parse(localStorage.items || '[]'));
+        }, 1000);
+      },
+    };
+  },
+
+  saveItems: function (items) {
+    const success = !!(this.count++ % 2);
+
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!success) return reject({ success });
+
+        localStorage.items = JSON.stringify(items);
+        return resolve({ success });
+      }, 1000);
+    });
+  },
+
+  count: 1,
+}
+
+
 Vue.createApp({
   components: {
     'input-form': InputForm
   }
-}).mount('#Multi_app')
+}).mount('#Persistance_app');
+
+
+
+
+

@@ -1,3 +1,5 @@
+import mitt from 'mitt';
+
 // noty wydawnicze o filmach
 // blurb - a short description of a book, movie, or other product written 
 // for promotional purposes and appearing on the cover of a book or in an advertisement
@@ -51,6 +53,15 @@ const routes = [
   {path: '/the-dark-knight-rises', component: TheDarkKnightRisesBlurb},
 ];
 
+const emitter = mitt();
+
+// nasłuch do zdarzeń związanych z przechodzeniem do poprzedniej/następnej strony
+window.addEventListener('popstate', () => {
+  emitter.emit('navigate');
+});
+
+
+// View component
 const View = {
   name: 'router-view',
   template: `<component :is="currentView"></component>`,
@@ -67,6 +78,11 @@ const View = {
     } else {
       this.currentView = this.getRouteObject().component;
     }
+    // Event listener for link navigation
+    emitter.on('navigate', () => {
+      this.currentView = this.getRouteObject().component;
+    });
+
   },
   methods: {
     getRouteObject() {
@@ -77,20 +93,41 @@ const View = {
   }
 };
 
+// Link component
+const Link = {
+  name: 'router-link',
+  props: {
+    to: {
+      type: String,
+      required: true,
+    },
+  },
+  template: `<a @click="navigate" :href="to">{{ to }}</a>`,
+  methods: {
+    navigate(evt) {
+      evt.preventDefault();
+      window.history.pushState(null, null, this.to);
+      emitter.emit('navigate');
+    }
+  }
+};
+
+
 const App = {
   name: 'App',
   template: 
   `<div id="app">
     <div class="movies">
       <h2>Który film?</h2>
-      <a href="/dunkirk">/dunkirk</a>
-      <a href="/interstellar">/interstellar</a>
-      <a href="/the-dark-knight-rises">/the-dark-knight-rises</a>     
+      <router-link to="/dunkirk">/dunkirk</router-link>
+      <router-link to="/interstellar">/interstellar</router-link>
+      <router-link to="/the-dark-knight-rises">/the-dark-knight-rises</router-link>     
       <router-view></router-view>
     </div>
   </div>`,
   components: {
-    'router-view': View
+    'router-view': View,
+    'router-link': Link
   }
 };
 

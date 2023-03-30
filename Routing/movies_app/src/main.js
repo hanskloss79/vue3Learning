@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
 import App from './app/app';
+import {router} from './app/app';
 
-createApp(App).mount('#movies_app');
+createApp(App).use(router).mount('#movies_app');

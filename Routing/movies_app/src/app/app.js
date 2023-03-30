@@ -1,5 +1,4 @@
-import mitt from 'mitt';
-
+import { createRouter, createWebHistory } from 'vue-router';
 // noty wydawnicze o filmach
 // blurb - a short description of a book, movie, or other product written 
 // for promotional purposes and appearing on the cover of a book or in an advertisement
@@ -51,67 +50,14 @@ const routes = [
   {path: '/dunkirk', component: DunkirkBlurb},
   {path: '/interstellar', component: InterstellarBlurb},
   {path: '/the-dark-knight-rises', component: TheDarkKnightRisesBlurb},
+  {
+    path: '/:pathMatch(.*)*',
+    component: {
+      name: 'not-found-blurb',
+      template: `<h2>Nie znaleziono :(. Wybierz film z listy!</h2>`
+    }
+  }
 ];
-
-const emitter = mitt();
-
-// nasłuch do zdarzeń związanych z przechodzeniem do poprzedniej/następnej strony
-window.addEventListener('popstate', () => {
-  emitter.emit('navigate');
-});
-
-
-// View component
-const View = {
-  name: 'router-view',
-  template: `<component :is="currentView"></component>`,
-  data() {
-    return {
-      currentView: {},
-    }
-  },
-  created() {
-    if (this.getRouteObject() === undefined) {
-      this.currentView = {
-        template: `<h2>Nie znaleziono :(. Wybierz film z listy!</h2>`
-      };
-    } else {
-      this.currentView = this.getRouteObject().component;
-    }
-    // Event listener for link navigation
-    emitter.on('navigate', () => {
-      this.currentView = this.getRouteObject().component;
-    });
-
-  },
-  methods: {
-    getRouteObject() {
-      return routes.find(
-        route => route.path === window.location.pathname
-      );
-    }
-  }
-};
-
-// Link component
-const Link = {
-  name: 'router-link',
-  props: {
-    to: {
-      type: String,
-      required: true,
-    },
-  },
-  template: `<a @click="navigate" :href="to">{{ to }}</a>`,
-  methods: {
-    navigate(evt) {
-      evt.preventDefault();
-      window.history.pushState(null, null, this.to);
-      emitter.emit('navigate');
-    }
-  }
-};
-
 
 const App = {
   name: 'App',
@@ -124,11 +70,12 @@ const App = {
       <router-link to="/the-dark-knight-rises">/the-dark-knight-rises</router-link>     
       <router-view></router-view>
     </div>
-  </div>`,
-  components: {
-    'router-view': View,
-    'router-link': Link
-  }
+  </div>`
 };
+
+export const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
 
 export default App;

@@ -3,24 +3,36 @@
         "id": 1,
         "title": "Bluza z katurem",
         "description": "Lekka, oddychająca bluza z kapturem z logo Vue. Gwarantujemy, że będziesz wyglądać świeżo, gdy jest ciepło.",
+        "product_type": "hoodies/jackets",
+        "image_tag": "hoodie.png",
+        "created_at": 2017,
         "price": 99.99
     },
     {
         "id": 2,
         "title": "T-shirt",
         "description": "Oryginalny element garderoby marki Vue. Zawsze gotowy, aby utrzymać Twój styl w ryzach.",
+        "product_type": "shirts/t-shirts",
+        "image_tag": "tee.png",
+        "created_at": 2017,
         "price": 79.99
     },
     {
         "id": 3,
         "title": "Dopasowana czapka",
         "description": "Zachowaj wygodę i chłód dzięki dopasowanej czapce Vue 3 z normalnym daszkiem i w rozmiarze M.",
+        "product_type": "caps/hats",
+        "image_tag": "cap.png",
+        "created_at": 2018,
         "price": 79.99
     },
     {
         "id": 4,
         "title": "Kurtka",
         "description": "Trzymaj się ciepło dzięki wytrzymałej, lekkiej kurtce Vue.",
+        "product_type": "hoodies/jackets",
+        "image_tag": "jacket.png",
+        "created_at": 2018,
         "price": 249.99
     }
 ]

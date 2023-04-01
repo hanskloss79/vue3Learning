@@ -28,10 +28,6 @@ export default {
     ]),
   },
 
-  created() {
-    this.$store.dispatch("getProductItems");
-  },
-
   components: {
     ProductListItem,
   }

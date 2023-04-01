@@ -1,1 +1,18 @@
-[]
+[
+    {
+        "id": 1,
+        "title": "Bluza z katurem",
+        "description": "Lekka, oddychająca bluza z kapturem z logo Vue. Gwarantujemy, że będziesz wyglądać świeżo, gdy jest ciepło.",
+        "price": 99.99,
+        "image_tag": "hoodie.png",
+        "quantity": 1
+    },
+    {
+        "id": 2,
+        "title": "T-shirt",
+        "description": "Oryginalny element garderoby marki Vue. Zawsze gotowy, aby utrzymać Twój styl w ryzach.",
+        "price": 79.99,
+        "image_tag": "tee.png",
+        "quantity": 1
+    }
+]

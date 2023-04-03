@@ -28,6 +28,9 @@
 export default {
     name: "ProductItem",
     props: ["id"],
+    created() {
+        document.getElementById("app").style.alignItems = "center";
+    },
     computed: {
         productItem() {
             return this.$store.getters.productItemFromId(Number(this.id));
@@ -45,7 +48,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+
+
 #product-item {
     display: flex;
     width: 100%;

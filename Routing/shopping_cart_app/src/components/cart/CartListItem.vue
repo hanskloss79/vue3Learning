@@ -4,7 +4,7 @@
             <p class="is-inline">{{ cartItem.title }}</p>
             <div>
                 <span class="cart-item--price has-text-primary has-text-weight-bold">
-                    {{ cartItem.price }}$ x {{ cartItem.quantity }}
+                    {{ cartItem.price }} zł x {{ cartItem.quantity }}
                 </span>
                 <span>
                     <i v-on:click="addCartItem(cartItem)" 

@@ -21,14 +21,53 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/products', (req, res) => {
+// A fake API token our server validates
+const API_TOKEN = 'D6W69PRgCoDKgHZGJmRUNA';
+
+const extractToken = (req) => (
+  req.query.token
+);
+
+const authenticatedRoute = ((req, res, next) => {
+  const token = extractToken(req);
+
+  if (token) {
+    if (token === API_TOKEN) {
+      return next();
+    } else {
+      return res.status(403).json({
+        success: false,
+        error: 'Invalid token provided',
+      });
+    }
+  } else {
+    return res.status(403).json({
+      success: false,
+      error: 'No token provided. Supply token as query param `token`',
+    });
+  }
+});
+
+// Make things more noticeable in the UI by introducing a fake delay
+// to logins
+const FAKE_DELAY = 500; // ms
+app.post('/login', (req, res) => {
+  setTimeout(() => (
+    res.json({
+      success: true,
+      token: API_TOKEN,
+    })
+  ), FAKE_DELAY);
+});
+
+app.get('/products', authenticatedRoute, (req, res) => {
   fs.readFile(PRODUCT_DATA_FILE, (err, data) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.json(JSON.parse(data));
   });
 });
 
-app.get('/cart', (req, res) => {
+app.get('/cart', authenticatedRoute, (req, res) => {
   fs.readFile(CART_DATA_FILE, (err, data) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.json(JSON.parse(data));

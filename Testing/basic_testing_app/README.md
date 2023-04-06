@@ -23,6 +23,7 @@ npm run lint
 ### Run prepared tests
 ```
 npm run test
+npm run test2
 ```
 
 ### Customize configuration

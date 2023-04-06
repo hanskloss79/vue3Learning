@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test": "vue-cli-service test:unit tests/unit/App.spec.js",
+    "test2": "vue-cli-service test:unit tests/unit/App2.spec.js",
     "test:watch": "vue-cli-service test:unit tests/unit/App.spec.js --watch",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"

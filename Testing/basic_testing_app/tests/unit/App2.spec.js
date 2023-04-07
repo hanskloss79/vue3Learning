@@ -57,8 +57,55 @@ describe("App.vue", () => {
                 expect(addItemButton.element.disabled).to.be.true;
             });
         });
+
+        // testowanie wysyłania danych z formularza - dodanie Item do listy
+        describe("a następnie przesyła formularz", () => {
+            let addItemButton;
+            let itemList;
+            let inputField;
+
+            beforeEach(async () => {
+                addItemButton = wrapper.find(".ui.button");
+                itemList = wrapper.find(".item-list");
+                inputField = wrapper.find("input");
+
+                wrapper.setData({ item: "New Item" });
+                await addItemButton.trigger("submit");
+            });
+            it('aplikacja powinna dodać nowy element do tablicy "items" i na stronę', () => {
+                expect(wrapper.vm.items).to.contain("New Item");
+                expect(itemList.html()).to.contain("<td>New Item</td>");
+            })
+            it('aplikacja powinna wyczyścić pole tekstowe i ustawić item na pusty string', () => {
+                expect(wrapper.vm.item).to.equal("");
+                expect(inputField.element.value).to.equal("");
+            })
+            it('przycisk "Add" powinien stać się nieaktywny', async () => {
+                expect(addItemButton.element.disabled).to.be.true;
+            });
+        });
+
     });
 
+    describe('Użytkownik kliknie etykietę "Remove all"', () => {
+        let itemList;
+        let removeItemsLabel;
 
+        beforeEach(() => {
+            itemList = wrapper.find(".item-list");
+            removeItemsLabel = wrapper.find(".ui.label");
+
+            wrapper.setData({ items: ["Item 1", "Item 2", "Item 3" ]});
+        });
+
+        it('aplikacja powinna wyczyścić listę i tablicę "items"', async () => {
+            await removeItemsLabel.trigger('click');
+
+            expect(wrapper.vm.items).to.deep.equal([]);
+            expect(itemList.html()).to.not.contain('<td>Item 1</td>');
+            expect(itemList.html()).to.not.contain('<td>Item 2</td>');
+            expect(itemList.html()).to.not.contain('<td>Item 3</td>');
+        });
+    });
 
 })

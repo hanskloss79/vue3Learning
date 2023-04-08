@@ -1,6 +1,6 @@
 <template>
   <div id="listings">
-    <Notification :notification="notification" :isDark="isDark" />
+    <ListingsNotification :notification="notification" :isDark="isDark" />
     <div v-for="listing in listings" :key="listing.id">
       <ListingsListItem :listing="listing" :isDark="isDark" />
     </div>
@@ -34,15 +34,14 @@ export default {
   },
   components: {
     ListingsListItem,
-    // eslint-disable-next-line
-    ListingsNotification
+    ListingsNotification,
   },
   mounted() {
     this.notification = "Welcome to NewlineBnB!";
 
     setTimeout(() => {
       this.notification = null;
-    }, 1000);
+    }, 5000);
   }
 }
 </script>

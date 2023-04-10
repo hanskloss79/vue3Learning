@@ -16,32 +16,44 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { ref, computed } from "vue";
+// mapGetters helper cannot be used within the setup() function of a component.
+//import { mapGetters } from 'vuex';
+// instead to access the store we can use function useStore
+import { useStore } from "vuex";
 import ListingsList from './components/ListingsList';
 
 export default {
   name: 'App',
-  data() {
+  setup() {
+    // access the store
+    const store = useStore();
+
+    // reactive data properties
+    const isDark = ref(false);
+
+    // computed properties
+    const darkModeButtonText = computed(() => {
+      return isDark.value ? "Light Mode" : "Dark Mode";
+    });
+    const listings = computed(() => store.getters.listings);
+    const loading = computed(() => store.getters.loading);
+
+    // methods
+    const toggleDarkMode = () => {
+      isDark.value = !isDark.value;
+    };
+
+    store.dispatch("getListings");
+
+    // return properties for component to access
     return {
-      isDark: false,
+      isDark,
+      darkModeButtonText,
+      listings,
+      loading,
+      toggleDarkMode,
     }
-  },
-  computed: {
-    ...mapGetters([
-      'listings',
-      'loading'
-    ]),
-    darkModeButtonText() {
-      return this.isDark ? 'Light Mode' : 'Dark Mode';
-    }
-  },
-  methods: {
-    toggleDarkMode() {
-      this.isDark = !this.isDark;
-    }
-  },
-  created() {
-    this.$store.dispatch('getListings');
   },
   components: {
     ListingsList

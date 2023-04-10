@@ -15,33 +15,44 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { ref, onMounted } from "vue";
+import { useStore } from 'vuex';
 import ListingsListItem from './ListingsListItem';
 import ListingsNotification from './ListingsNotification';
 
 export default {
   name: 'ListingsList',
   props: ['listings', 'isDark'],
-  data() {
+  
+  setup() {
+    // access the store
+    const store = useStore();
+
+    // reactive data properties
+    const notification = ref(null);
+
+    // methods
+    const resetListings = () => store.dispatch("resetListings");
+
+    // mounted lifecycle hook
+    onMounted(() => {
+      notification.value = "Witamy w NewlineBnB!!!!!";
+
+      setTimeout(() => {
+        notification.value = null;
+      }, 3000);
+    });
+
+    // return properties for component to access
     return {
-      notification: null,
+      notification,
+      resetListings
     }
   },
-  methods: {
-    ...mapActions([
-      'resetListings'
-    ])
-  },
+
   components: {
     ListingsListItem,
     ListingsNotification,
   },
-  mounted() {
-    this.notification = "Welcome to NewlineBnB!";
-
-    setTimeout(() => {
-      this.notification = null;
-    }, 5000);
-  }
 }
 </script>

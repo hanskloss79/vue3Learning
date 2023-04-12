@@ -1,12 +1,15 @@
 <template>
   <div id="listings">
-    <ListingsNotification :notification="notification" :isDark="isDark" />
+    <ListingsNotification 
+      :notification="notification" 
+      :toggleNotification="toggleNotification" 
+    />
     <div v-for="listing in listings" :key="listing.id">
-      <ListingsListItem :listing="listing" :isDark="isDark" />
+      <ListingsListItem :listing="listing"/>
     </div>
     <button
       class="button is-light"
-      :class="{ 'is-primary': isDark, 'is-info': !isDark }"
+      :class="{ 'is-primary': darkMode, 'is-info': !darkMode }"
       @click="resetListings" 
       :disabled="listings.length === 3">
       Reset
@@ -15,37 +18,45 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
 import { useStore } from 'vuex';
 import ListingsListItem from './ListingsListItem';
 import ListingsNotification from './ListingsNotification';
+import useNotification from '../hooks/useNotification';
+import useDarkMode from '../hooks/useDarkMode';
 
 export default {
   name: 'ListingsList',
-  props: ['listings', 'isDark'],
+  props: ['listings'],
   
   setup() {
     // access the store
     const store = useStore();
+    const { darkMode } = useDarkMode();
 
-    // reactive data properties
-    const notification = ref(null);
+    // reactive data properties - notifications
+    const {
+      notification,
+      setNotification,
+      toggleNotification,
+    } = useNotification();
 
     // methods
-    const resetListings = () => store.dispatch("resetListings");
+    const resetListings = () => {
+      setNotification("Oferty zostały zresetowane!");
+      return store.dispatch("resetListings");
+    };
 
     // mounted lifecycle hook
     onMounted(() => {
-      notification.value = "Witamy w NewlineBnB!!!!!";
-
-      setTimeout(() => {
-        notification.value = null;
-      }, 3000);
+      setNotification("Witamy w NewlineBnB!!!!!");
     });
 
     // return properties for component to access
     return {
+      darkMode,
       notification,
+      toggleNotification,
       resetListings
     }
   },

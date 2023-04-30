@@ -2,4 +2,4 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import store from './store';
 
-createApp(App).use(store).mount('#listings_app');
+createApp(App).provide("store", store).mount('#listings_app');

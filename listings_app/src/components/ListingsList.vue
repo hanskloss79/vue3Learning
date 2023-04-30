@@ -18,10 +18,11 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
-import { useStore } from 'vuex';
+import { inject, onMounted } from "vue";
+
 import ListingsListItem from './ListingsListItem';
 import ListingsNotification from './ListingsNotification';
+
 import useNotification from '../hooks/useNotification';
 import useDarkMode from '../hooks/useDarkMode';
 
@@ -31,7 +32,7 @@ export default {
   
   setup() {
     // access the store
-    const store = useStore();
+    const store = inject('store');
     const { darkMode } = useDarkMode();
 
     // reactive data properties - notifications
@@ -44,7 +45,7 @@ export default {
     // methods
     const resetListings = () => {
       setNotification("Oferty zostały zresetowane!");
-      return store.dispatch("resetListings");
+      return store.actions.resetListings();
     };
 
     // mounted lifecycle hook

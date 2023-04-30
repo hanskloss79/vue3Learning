@@ -1,55 +1,39 @@
-import { createStore } from 'vuex';
+import { reactive, readonly } from 'vue';
 import axios from 'axios';
-import useNotification from './hooks/useNotification';
 
-const { setNotification } = useNotification();
-
-const state = {
+const state = reactive({
   listings: [],
   loading: false
-};
+});
 
 const mutations = {
-  UPDATE_LISTINGS(state, payload) {
-    state.listings = payload;
-  },
-  LOADING_PENDING (state) {
-    state.loading = true;
-  },
-  LOADING_COMPLETE (state) {
-    state.loading = false;
-  }
-};
+  updateListings: (payload) => state.listings = payload,
+  loadingPending: () => state.loading = true,
+  loadingComplete: () => state.loading = false,
+}
 
 const actions = {
-  getListings({ commit }) {
-    commit('LOADING_PENDING');
+  getListings: () => {
+    mutations.loadingPending();
     return axios.get('/api/listings').then((response) => {
-      commit('UPDATE_LISTINGS', response.data);
-      commit('LOADING_COMPLETE');
+      mutations.updateListings(response.data);
+      mutations.loadingComplete();
     });
   },
-  removeListing({ commit }, listing) {
+  removeListing: (listing) => {
     return axios.post('/api/listings/delete', listing).then((response) => {
-      commit('UPDATE_LISTINGS', response.data);
-      setNotification("Oferta została usunięta!!");
+      mutations.updateListings(response.data);
     });
   },
-  resetListings({ commit }) {
+  resetListings: () => {
     return axios.post('/api/listings/reset').then((response) => {
-      commit('UPDATE_LISTINGS', response.data)
+      mutations.updateListings(response.data);
     });
   },
 };
 
-const getters = {
-  listings: state => state.listings,
-  loading: state => state.loading
-};
-
-export default createStore({
-  state,
+export default {
+  state: readonly(state),
   mutations,
   actions,
-  getters
-});
+};

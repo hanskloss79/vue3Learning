@@ -16,11 +16,10 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, inject } from "vue";
 // mapGetters helper cannot be used within the setup() function of a component.
 //import { mapGetters } from 'vuex';
 // instead to access the store we can use function useStore
-import { useStore } from "vuex";
 import ListingsList from './components/ListingsList';
 import useDarkMode from "./hooks/useDarkMode";
 
@@ -28,17 +27,17 @@ export default {
   name: 'App',
   setup() {
     // access the store
-    const store = useStore();
+    const store = inject('store');
     const { darkMode, toggleDarkMode } = useDarkMode();
 
     // computed properties
     const darkModeButtonText = computed(() => {
       return darkMode.value ? "Light Mode" : "Dark Mode";
     });
-    const listings = computed(() => store.getters.listings);
-    const loading = computed(() => store.getters.loading);
+    const listings = computed(() => store.state.listings);
+    const loading = computed(() => store.state.loading);
 
-    store.dispatch("getListings");
+    store.actions.getListings();
 
     // return properties for component to access
     return {
